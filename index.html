@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="ZXing for JS">
+  <title>Scan and Buy</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Belanosima&family=Poppins:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body>
+  <main class="wrapper">
+    <nav id="logo">
+        <div>
+              <h1>Scan and Buy</h1>
+        </div>
+    </nav>
+    <section class="container" id="demo-content">
+      <div class="video-container">
+        <video id="video" width="100%" ></video>
+        <label></label>
+        <pre><code id="result"></code></pre>
+      </div>
+    </section>
+    <nav id="navbar">
+        <ul>
+            <li class="item"><a href="#"><span class="material-symbols-outlined">home</span></a></li>
+            <li><a class="button" id="startButton"><span class="material-symbols-outlined">barcode_scanner</span></a></li>
+            <li class="item"><a href="#"><span class="material-symbols-outlined">search</span></a></li>
+            <li class="item"><a href="#"><span class="material-symbols-outlined">shopping_bag</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Add the new "Enter Barcode" button below the "Scan" button -->
+    <!-- <a class="button" id="enterBarcodeButton" href="barcode.html">Enter Barcode</a> -->
+  </main>
+
+  <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('load', function () {
+      let barcode; // Variable to store the decoded barcode
+      let selectedDeviceId; // Specify the desired device ID here
+      const productDatabase = {
+        "90311017": {
+          "name": "Camera",
+          "price": 30000,
+          "description": "It is a DSLR camera"
+        },
+        "90311024": {
+          "name": "Camera",
+          "price": 30000,
+          "description": "It is a DSLR camera"
+        },
+        "725272730706": {
+          "name": "iPhone",
+          "price": 20000,
+          "description": "It is a phone"
+        }
+      };
+
+      const codeReader = new ZXing.BrowserMultiFormatReader();
+      console.log('ZXing code reader initialized');
+
+      codeReader.listVideoInputDevices()
+        .then((videoInputDevices) => {
+          // Search for the back camera (environment-facing camera) and set it as the default
+          let backCamera = videoInputDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear'));
+
+          if (!backCamera) {
+            // If back camera is not available, use the first available camera as a fallback
+            backCamera = videoInputDevices[0];
+            console.log('using front camera')
+          }
+
+          selectedDeviceId = backCamera.deviceId;
+
+          document.getElementById('startButton').addEventListener('click', () => {
+            codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
+              if (result) {
+                console.log(result);
+                barcode = result.text;
+                document.getElementById('result').textContent = barcode;
+
+                // Check if the decoded barcode exists in the product database
+                if (productDatabase.hasOwnProperty(barcode)) {
+                  // Store the scanned barcode in the browser's local storage
+                  localStorage.setItem('scannedBarcode', barcode);
+
+                  // Redirect to the new page after successful scanning
+                  window.location.href = 'cart.html';
+                } else {
+                  // Barcode not found in the database
+                  document.getElementById('result').textContent = 'Product not found.';
+                }
+              }
+              if (err && !(err instanceof ZXing.NotFoundException)) {
+                console.error(err);
+                document.getElementById('result').textContent = err;
+              }
+            });
+            console.log(`Started continuous decode from camera with id ${selectedDeviceId}`);
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    });
+  </script>
+</body>
+
+</html>

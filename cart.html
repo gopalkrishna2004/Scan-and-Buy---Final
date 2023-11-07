@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Nunito:wght@500&family=Poppins:wght@300&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Oswald:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap" rel="stylesheet">
+    
+
+</head>
+
+<body>
+    <main class="wrapper">
+        <nav id="logo">
+            <div>
+                  <h1>Scan and Buy</h1>
+            </div>
+        </nav>
+        <section>
+            <div class="productinfo">
+                <div id="productDetails"></div>
+            </div>
+            <button class="a2c_btn" onclick="continueShopping()">Continue Shopping</button>
+        </section> 
+        
+    </main>
+
+    <script type="text/javascript">
+        window.addEventListener('load', function () {
+            // Retrieve the scanned barcode from the browser's local storage
+            const scannedBarcode = localStorage.getItem('scannedBarcode');
+
+            const productDatabase = {
+                "90311017": {
+                    "name": "Nike Dunk Low",
+                    "price": 30000,
+                    "img":"https://images.pexels.com/photos/13600672/pexels-photo-13600672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                },
+                "90311024": {
+                    "name": "Camera",
+                    "price": 30000,
+                    "img":"https://images.pexels.com/photos/13600672/pexels-photo-13600672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                },
+                "725272730706": {
+                    "name": "iPhone",
+                    "price": 20000,
+                    "description": "It is a phone"
+                }
+            };
+
+            // Check if the scanned barcode exists in the product database
+            if (productDatabase.hasOwnProperty(scannedBarcode)) {
+                const product = productDatabase[scannedBarcode];
+                const productDetailsElement = document.getElementById('productDetails');
+                productDetailsElement.innerHTML = `
+            <img src="${product.img}" alt="${product.name}" id="P_img">
+            <h3 id="P_name">${product.name}</h3>
+            <p id="P_price">$${product.price}</p> 
+            <section>
+                <div class="size">
+                    <label for="sizeDropdown" id="size" >Size:</label>
+                    <select id="sizeDropdown" >
+                        <option value="small">Small</option>
+                        <option value="medium">Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+                <div id="quantityContainer" class="input-container">
+                    <label for="quantityInput" class="input-label">Quantity:</label>
+                    <input type="number" id="quantityInput" class="input-field" value="1" min="1">
+                </div>        
+            </section>
+          <button class="a2c_btn" onclick="addToCart('${scannedBarcode}', '${product.name}', '${product.price}','${product.img}')">Add to Cart</button>
+        `;
+            } else {
+                // Barcode not found in the database
+                document.getElementById('productDetails').textContent = 'Product not found.';
+            }
+        });
+        
+        function addToCart(barcode, name, price, img) {
+            // Get user inputs
+            const selectedSize = document.getElementById('sizeDropdown').value;
+            const selectedQuantity = document.getElementById('quantityInput').value;
+        
+            // You can now send the barcode, name, price, img, size, and quantity to the "Add to Cart" page
+            // For demonstration purposes, let's just log the values for now
+            console.log("Adding to cart:", {
+                barcode,
+                name,
+                price,
+                img,
+                size: selectedSize,
+                quantity: selectedQuantity,
+            });
+        
+            // Redirect to the "Add to Cart" page or perform any other desired actions
+            window.location.href = 'add_to_cart_page.html'; // Uncomment this line to redirect
+        }
+        
+        function continueShopping() {
+            // Redirect to the index.html page
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,188 @@
+* {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+  }
+
+/* scan-page */
+
+  /* navbar */
+#navbar {
+    display: flex;
+    align-items: center;
+}
+
+#navbar::before {
+    content: "";
+    background-color: black;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    opacity: 0.4;
+}
+
+/* logo */
+#logo{
+padding: 7px;
+font-family:'Poppins';
+font-size: 15px;
+background-color: #a129f2;
+width: 100%;
+color: white;
+}
+
+/* navbarlist */
+#navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #a129f2; /* Adjust the background color as needed */
+    z-index: 1000; 
+    /* position: absolute; */
+}
+
+#navbar ul {
+    display: flex;
+    justify-content: space-around;
+    padding: 6px;
+}
+
+#navbar ul li {
+    list-style: none;
+    font-size: 1.2rem;
+}
+
+#navbar ul li a {
+    color: white;
+    display: block;
+    padding: 3px 35px;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    
+}
+
+/* google icons */
+.material-symbols-outlined {
+    font-size: 26px;
+     font-variation-settings:
+     'FILL' 0,
+     'wght' 400,
+     'GRAD' 0,
+     'opsz' 24
+     
+   }
+
+/* display container */  
+.container {
+    display: flex;
+    max-width: 72em;
+    
+}
+  
+.video-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    /* top: 20px;
+    margin-inline: 7;
+    margin-inline: 7px;
+    flex-direction: column; */
+    width: 100%; 
+  }
+ 
+  
+.product-container {
+    flex: 1;
+    padding-left: 1em;
+    position: relative;
+    right: -49px;
+    left: 36px;
+    top: 51px; 
+  }
+
+  #video {
+    width: 100%;
+    height: 100%;
+  }
+
+ /* add to cart-page  */
+
+ #P_img{
+    width: 100%;
+    padding:15px;
+    border-radius: 4px;
+ }
+
+ #P_name{
+   margin: 2px 14px;
+  font-size: 25px;
+  font-family: Oswald ;
+ }
+
+ #P_price{
+    margin: 2px 14px;
+    font-weight: bold;
+    font-family: Oswald ;
+ }
+ 
+ .size{
+    margin: 6px 14px;
+ }
+ #size {
+    display: block; 
+    margin-bottom: 2px; 
+    font-weight: bold;
+    font-family: Oswald ;
+}
+  
+  #sizeDropdown {
+    display: block; 
+    margin-top: 2px; 
+    background-color: transparent;
+  border: 1px solid #ccc; 
+  color: #333; 
+  padding: 5px;
+  font-size: 15px;
+  }
+
+#quantityInput{
+   
+    margin-top: 2px; 
+    background-color: transparent;
+    border: 1px solid #ccc; 
+    color: #333; 
+}
+
+#quantityContainer {
+    margin: 15px;
+    font-family: Oswald ;
+    font-weight: bold;
+  }
+  
+  .input-label {
+    display: block;
+  }
+  
+  .input-field {
+    
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  
+ .a2c_btn{
+    width: 92%;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    background-color: #a129f2;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 7px 14px;
+    
+}
+ 
+  
