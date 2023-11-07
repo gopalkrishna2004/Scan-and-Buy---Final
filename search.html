@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Nunito:wght@500&family=Poppins:wght@300&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <title>search | Scan and Buy</title>
+
+</head>
+
+<body>
+    <main class="wrapper">
+        <nav id="logo">
+            <div>
+                <h1>Scan and Buy</h1>
+            </div>
+        </nav>
+        <!-- <section>
+            <div id="navbar-s">
+                <div>
+                    <div id="bs_icon">
+                        <a href="#"><span class="material-symbols-outlined">barcode_scanner</span></a>
+                    </div>
+                </div>
+                <form onsubmit="return submitBarcode();" id="form">
+                    <input type="text" id="barcodeInput" name="barcodeInput" id="form_input">
+                    <div id="search">
+                        <a><span class="material-symbols-outlined">search</span></a>
+                    </div>
+                </form>
+            </div>
+        </section> -->
+
+        <nav id="navbar-s">
+            <ul>
+                <li class="item"><a href="index.html">
+                    <span class="material-symbols-outlined">home</span></a>
+                </li>
+                <!-- <li class="item"><a href="#"><span class="material-symbols-outlined">search</span></a></li> -->
+                <li class="item"><a href="#">
+                        <form onsubmit="return submitBarcode();" id="form">
+                            <input type="text" id="barcodeInput" name="barcodeInput" id="form_input">
+                        </form>
+                    </a></li>
+            </ul>
+        </nav>
+
+
+    </main>
+
+    <script type="text/javascript">
+        function submitBarcode() {
+            const barcode = document.getElementById('barcodeInput').value;
+            // Store the entered barcode in the browser's local storage
+            localStorage.setItem('scannedBarcode', barcode);
+
+            const productDatabase = {
+                "90311017": {
+                    "name": "Camera",
+                    "price": 30000,
+                    "description": "It is a DSLR camera"
+                },
+                "90311024": {
+                    "name": "Camera",
+                    "price": 30000,
+                    "description": "It is a DSLR camera"
+                },
+                "725272730706": {
+                    "name": "iPhone",
+                    "price": 20000,
+                    "description": "It is a phone"
+                }
+            };
+
+            // Check if the entered barcode exists in the product database
+            if (productDatabase.hasOwnProperty(barcode)) {
+                // Redirect to the product details page if barcode is found
+                window.location.href = 'cart.html';
+            } else {
+                // Barcode not found in the database
+                alert('Product not found.');
+            }
+
+            // Prevent form submission to the server
+            return false;
+        }
+    </script>
+</body>
+
+</html>
