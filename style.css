@@ -90,9 +90,14 @@ color: white;
     margin-inline: 7px;
     flex-direction: column; */
     width: 100%; 
-    height: calc(100vh - 80px);
+    height: 100%;
   }
- 
+  
+  @media (max-width: 768px) {
+    .video-container {
+        height: calc(100vh - 56px); /* Adjust the 56px to match your navbar height */
+    }
+}
   
 .product-container {
     flex: 1;
