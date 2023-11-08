@@ -92,6 +92,7 @@ color: white;
     width: 100%; 
     height: 100vh; /* Set height to 100vh for full viewport height */
     margin: 0; 
+    overflow: hidden;
   }
   
   @media (max-width: 768px) {
@@ -99,7 +100,22 @@ color: white;
         height: calc(100vh - 56px); /* Adjust the 56px to match your navbar height */
     }
 }
-  
+
+/* Add a rectangle in the middle of the screen */
+.video-container::before {
+  content: '';
+  position: absolute;
+  top: 50%; /* Position it at the middle vertically */
+  left: 50%; /* Position it at the middle horizontally */
+  transform: translate(-50%, -50%); /* Center the rectangle using translate */
+  width: 310px;
+  height: 180px; /* Adjust the height of the rectangle */
+  border: 2px solid gray; /* Adjust the border properties */
+  box-sizing: border-box; /* Include border in width and height calculations */
+  z-index: 1; /* Ensure the rectangle appears above the video */
+  border-radius: 14px;
+}
+
 .product-container {
     flex: 1;
     padding-left: 1em;
