@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shopping Bag | Scan and Buy</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Add your font links and other stylesheets here -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <!-- fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Nunito:wght@500&family=Poppins:wght@300&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Oswald:wght@300&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <main class="wrapper">
+        <nav id="logo">
+            <div>
+                <h1>Scan and Buy</h1>
+            </div>
+        </nav>
+        <section>
+            <h2 id="title-sb">Your Shopping Bag</h2>
+            <div id="bagContent"></div>
+            <p id="totalPrice">Total Price: $0.00</p>
+            <button class="a2c_btn" onclick="checkout()">Proceed to Checkout</button>
+        </section>
+        <nav id="navbar">
+            <ul>
+                <li class="item"><a href="index.html"><span class="material-symbols-outlined">home</span></a></li>
+                <li><a class="button" id="startButton"><span
+                            class="material-symbols-outlined">barcode_scanner</span></a></li>
+                <li class="item"><a href="search.html"><span class="material-symbols-outlined">search</span></a></li>
+                <li class="item"><a href="bag.html"><span class="material-symbols-outlined">shopping_bag</span></a></li>
+            </ul>
+        </nav>
+    </main>
+
+    <script type="text/javascript">
+        window.addEventListener('load', function () {
+            // Retrieve the items from the bag in local storage
+            const shoppingBag = JSON.parse(localStorage.getItem('shoppingBag')) || [];
+
+            // Display the items in the bag
+            const bagContentElement = document.getElementById('bagContent');
+            if (shoppingBag.length > 0) {
+                shoppingBag.forEach(item => {
+                    bagContentElement.innerHTML += `
+                        <div class="bag-item">
+                            <img src="${item.img}" alt="${item.name}" class="bag-item-img">
+                            <div class="bag-item-details">
+                                <h3>${item.name}</h3>
+                                <p>Size: ${item.size}</p>
+                                <p>Quantity: 
+                                    <button class="inc-btn" onclick="decreaseQuantity('${item.barcode}')">-</button>
+                                    <span id="quantity-${item.barcode}">${item.quantity}</span>
+                                    <button class="dec-btn" onclick="increaseQuantity('${item.barcode}')">+</button>
+                                </p>
+                                <p>Price: $${item.price}</p>
+                                <span class="material-symbols-outlined favorite-icon" onclick="toggleFavorite(this)">favorite</span>
+                                <button onclick="removeItem('${item.barcode}')">
+                                    <span class="material-symbols-outlined delete-icon">delete</span>
+                                  </button>                                  
+                            </div>
+                        </div>
+                    `;
+                });
+                calculateTotalPrice(shoppingBag);
+            } else {
+                bagContentElement.innerHTML = '<p>Your shopping bag is empty.</p>';
+            }
+        });
+
+        function calculateTotalPrice(shoppingBag) {
+            const totalPriceElement = document.getElementById('totalPrice');
+            const total = shoppingBag.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            totalPriceElement.textContent = `Total Price: $${total.toFixed(2)}`;
+        }
+
+        function increaseQuantity(barcode) {
+            const quantityElement = document.getElementById(`quantity-${barcode}`);
+            const currentQuantity = parseInt(quantityElement.textContent);
+            quantityElement.textContent = currentQuantity + 1;
+            updateLocalStorageQuantity(barcode, currentQuantity + 1);
+            calculateTotalPrice(JSON.parse(localStorage.getItem('shoppingBag')) || []);
+        }
+
+        function decreaseQuantity(barcode) {
+            const quantityElement = document.getElementById(`quantity-${barcode}`);
+            const currentQuantity = parseInt(quantityElement.textContent);
+            if (currentQuantity > 1) {
+                quantityElement.textContent = currentQuantity - 1;
+                updateLocalStorageQuantity(barcode, currentQuantity - 1);
+                calculateTotalPrice(JSON.parse(localStorage.getItem('shoppingBag')) || []);
+            }
+        }
+
+        function updateLocalStorageQuantity(barcode, newQuantity) {
+            const shoppingBag = JSON.parse(localStorage.getItem('shoppingBag')) || [];
+            const updatedBag = shoppingBag.map(item => {
+                if (item.barcode === barcode) {
+                    return { ...item, quantity: newQuantity };
+                }
+                return item;
+            });
+            localStorage.setItem('shoppingBag', JSON.stringify(updatedBag));
+        }
+
+        function removeItem(barcode) {
+            const shoppingBag = JSON.parse(localStorage.getItem('shoppingBag')) || [];
+            const updatedBag = shoppingBag.filter(item => item.barcode !== barcode);
+            localStorage.setItem('shoppingBag', JSON.stringify(updatedBag));
+            window.location.reload(); // Refresh the page to reflect the updated bag
+        }
+
+        function checkout() {
+            // Implement checkout functionality if needed
+            // For now, let's just log a message
+            console.log('Proceeding to checkout');
+        }
+
+        function toggleFavorite(icon) {
+            icon.classList.toggle('clicked');
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -11,70 +11,67 @@
   <link href="https://fonts.googleapis.com/css2?family=Belanosima&family=Poppins:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
 </head>
 
 <body>
   <main class="wrapper">
     <nav id="logo">
-        <div>
-              <h1>Scan and Buy</h1>
-        </div>
+      <div>
+        <h1>Scan and Buy</h1>
+      </div>
     </nav>
     <section class="container" id="demo-content">
       <div class="video-container">
-        <video id="video" ></video>
-
+        <video id="video"></video>
         <pre><code id="result"></code></pre>
       </div>
     </section>
     <nav id="navbar">
-        <ul>
-            <li class="item"><a href="#"><span class="material-symbols-outlined">home</span></a></li>
-            <li><a class="button" id="startButton"><span class="material-symbols-outlined">barcode_scanner</span></a></li>
-            <li class="item"><a href="search.html"><span class="material-symbols-outlined">search</span></a></li>
-            <li class="item"><a href="#"><span class="material-symbols-outlined">shopping_bag</span></a></li>
-        </ul>
+      <ul>
+        <li class="item"><a href="index.html"><span class="material-symbols-outlined">home</span></a></li>
+        <li><a class="button" id="startButton"><span class="material-symbols-outlined">barcode_scanner</span></a></li>
+        <li class="item"><a href="search.html"><span class="material-symbols-outlined">search</span></a></li>
+        <li class="item"><a href="bag.html"><span class="material-symbols-outlined">shopping_bag</span></a></li>
+      </ul>
     </nav>
-
-    <!-- Add the new "Enter Barcode" button below the "Scan" button -->
-    <!-- <a class="button" id="enterBarcodeButton" href="barcode.html">Enter Barcode</a> -->
   </main>
 
-  <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
-  <script type="text/javascript">
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAzROl0UtYBvqwRnoXoWuzDoIsa5CjTCdQ",
+      authDomain: "scan-and-buy-db963.firebaseapp.com",
+      projectId: "scan-and-buy-db963",
+      storageBucket: "scan-and-buy-db963.appspot.com",
+      messagingSenderId: "1078368091238",
+      appId: "1:1078368091238:web:589a440109dce82b5d41a7",
+      measurementId: "G-2J4EVV5E41"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const database = getDatabase(app);
+
     window.addEventListener('load', function () {
-      let barcode; // Variable to store the decoded barcode
-      let selectedDeviceId; // Specify the desired device ID here
-      const productDatabase = {
-        "90311017": {
-          "name": "Nike Dunk Low",
-          "price": 30000,
-          "img":"https://images.pexels.com/photos/13600672/pexels-photo-13600672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-      },
-      "90311024": {
-        "name": "Nike Air Jordan",
-        "price": 40000,
-        "img":"https://images.pexels.com/photos/1031955/pexels-photo-1031955.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-    },
-        "725272730706": {
-          "name": "iPhone",
-          "price": 20000,
-          "description": "It is a phone"
-        }
-      };
+      let barcode;
+      let selectedDeviceId;
 
       const codeReader = new ZXing.BrowserMultiFormatReader();
       console.log('ZXing code reader initialized');
 
       codeReader.listVideoInputDevices()
         .then((videoInputDevices) => {
-          // Search for the back camera (environment-facing camera) and set it as the default
           let backCamera = videoInputDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear'));
 
           if (!backCamera) {
-            // If back camera is not available, use the first available camera as a fallback
             backCamera = videoInputDevices[0];
             console.log('using front camera')
           }
@@ -88,17 +85,17 @@
                 barcode = result.text;
                 document.getElementById('result').textContent = barcode;
 
-                // Check if the decoded barcode exists in the product database
-                if (productDatabase.hasOwnProperty(barcode)) {
-                  // Store the scanned barcode in the browser's local storage
-                  localStorage.setItem('scannedBarcode', barcode);
+                const productRef = ref(database, 'products/' + barcode);
+                get(productRef).then((snapshot) => {
+                  const product = snapshot.val();
 
-                  // Redirect to the new page after successful scanning
-                  window.location.href = 'cart.html';
-                } else {
-                  // Barcode not found in the database
-                  document.getElementById('result').textContent = 'Product not found.';
-                }
+                  if (product) {
+                    localStorage.setItem('barcode', barcode);
+                    window.location.href = 'cart.html';
+                  } else {
+                    document.getElementById('result').textContent = 'Product not found.';
+                  }
+                });
               }
               if (err && !(err instanceof ZXing.NotFoundException)) {
                 console.error(err);

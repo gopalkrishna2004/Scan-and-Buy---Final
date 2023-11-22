@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,8 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Nunito:wght@500&family=Poppins:wght@300&display=swap" rel="stylesheet"> 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Oswald:wght@300&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Baloo+Bhai&display=swap" rel="stylesheet">
-    
 
+    <!-- Add Firebase SDK scripts -->
+    <script >
+     
+    </script>
 </head>
 
 <body>
@@ -26,82 +29,109 @@
             </div>
             <button class="a2c_btn" onclick="continueShopping()">Continue Shopping</button>
         </section> 
-        
     </main>
-
-    <script type="text/javascript">
-        window.addEventListener('load', function () {
-            // Retrieve the scanned barcode from the browser's local storage
-            const scannedBarcode = localStorage.getItem('scannedBarcode');
-
-            const productDatabase = {
-                "90311017": {
-                    "name": "Nike Dunk Low",
-                    "price": 30000,
-                    "img":"https://images.pexels.com/photos/13600672/pexels-photo-13600672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                },
-                "90311024": {
-                    "name": "Nike Air Jordan",
-                    "price": 40000,
-                    "img":"https://images.pexels.com/photos/1031955/pexels-photo-1031955.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                },
-                "725272730706": {
-                    "name": "iPhone",
-                    "price": 20000,
-                    "description": "It is a phone"
-                }
-            };
-
-            // Check if the scanned barcode exists in the product database
-            if (productDatabase.hasOwnProperty(scannedBarcode)) {
-                const product = productDatabase[scannedBarcode];
-                const productDetailsElement = document.getElementById('productDetails');
-                productDetailsElement.innerHTML = `
-            <img src="${product.img}" alt="${product.name}" id="P_img">
-            <h3 id="P_name">${product.name}</h3>
-            <p id="P_price">$${product.price}</p> 
-            <section>
-                <div class="size">
-                    <label for="sizeDropdown" id="size" >Size:</label>
-                    <select id="sizeDropdown" >
-                        <option value="small">Small</option>
-                        <option value="medium">Medium</option>
-                        <option value="large">Large</option>
-                    </select>
-                </div>
-                <div id="quantityContainer" class="input-container">
-                    <label for="quantityInput" class="input-label">Quantity:</label>
-                    <input type="number" id="quantityInput" class="input-field" value="1" min="1">
-                </div>        
-            </section>
-          <button class="a2c_btn" onclick="addToCart('${scannedBarcode}', '${product.name}', '${product.price}','${product.img}')">Add to Cart</button>
-        `;
-            } else {
-                // Barcode not found in the database
-                document.getElementById('productDetails').textContent = 'Product not found.';
-            }
-        });
-        
-        function addToCart(barcode, name, price, img) {
-            // Get user inputs
-            const selectedSize = document.getElementById('sizeDropdown').value;
-            const selectedQuantity = document.getElementById('quantityInput').value;
-        
-            // You can now send the barcode, name, price, img, size, and quantity to the "Add to Cart" page
-            // For demonstration purposes, let's just log the values for now
-            console.log("Adding to cart:", {
+  <script>
+    function addToCart(barcode, name, price, img) {
+        const selectedSize = document.getElementById('sizeDropdown').value;
+        const selectedQuantity = document.getElementById('quantityInput').value;
+    
+        // Retrieve the existing items in the bag from local storage
+        const existingItems = JSON.parse(localStorage.getItem('shoppingBag')) || [];
+    
+        // Check if the item with the same barcode is already in the bag
+        const existingItemIndex = existingItems.findIndex(item => item.barcode === barcode);
+    
+        if (existingItemIndex !== -1) {
+            // Item with the same barcode already exists, update the quantity
+            existingItems[existingItemIndex].quantity += parseInt(selectedQuantity);
+        } else {
+            // Item with the barcode is not in the bag, add a new item
+            const newItem = {
                 barcode,
                 name,
                 price,
                 img,
                 size: selectedSize,
-                quantity: selectedQuantity,
-            });
-        
-            // Redirect to the "Add to Cart" page or perform any other desired actions
-            window.location.href = 'add_to_cart_page.html'; // Uncomment this line to redirect
+                quantity: parseInt(selectedQuantity),
+            };
+    
+            existingItems.push(newItem);
         }
-        
+    
+        // Save the updated bag back to local storage
+        localStorage.setItem('shoppingBag', JSON.stringify(existingItems));
+    
+        // Redirect to the "Bag" page or perform any other desired actions
+        window.location.href = 'bag.html'; // Uncomment this line to redirect
+       }
+  </script>
+    <script type="module">
+         // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js";
+      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyAzROl0UtYBvqwRnoXoWuzDoIsa5CjTCdQ",
+        authDomain: "scan-and-buy-db963.firebaseapp.com",
+        projectId: "scan-and-buy-db963",
+        storageBucket: "scan-and-buy-db963.appspot.com",
+        messagingSenderId: "1078368091238",
+        appId: "1:1078368091238:web:589a440109dce82b5d41a7",
+        measurementId: "G-2J4EVV5E41"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+
+        window.addEventListener('load', async function () {
+            // Retrieve the scanned barcode from the browser's local storage
+            const barcode = localStorage.getItem('barcode');
+
+            try {
+                // Fetch product information from Firebase
+                const productRef = ref(database, 'products/' + barcode);
+                const snapshot = await get(productRef);
+                const product = snapshot.val();
+
+                // Check if the product exists
+                if (product) {
+                    const productDetailsElement = document.getElementById('productDetails');
+                    productDetailsElement.innerHTML = `
+                        <img src="${product.img}" alt="${product.name}" id="P_img">
+                        <h3 id="P_name">${product.name}</h3>
+                        <p id="P_price">$${product.price}</p>
+                        <section>
+                            <div class="size">
+                                <label for="sizeDropdown" id="size" >Size:</label>
+                                <select id="sizeDropdown" >
+                                    <option value="small">Small</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+                            <div id="quantityContainer" class="input-container">
+                                <label for="quantityInput" class="input-label">Quantity:</label>
+                                <input type="number" id="quantityInput" class="input-field" value="1" min="1">
+                            </div>        
+                        </section>
+                      <button class="a2c_btn" onclick="addToCart('${barcode}', '${product.name}', '${product.price}','${product.img}')">Add to Cart</button>
+            
+                    `;
+                } else {
+                    // Product not found in the database
+                    document.getElementById('productDetails').textContent = 'Product not found.';
+                }
+            } catch (error) {
+                console.error('Error fetching product information:', error);
+                document.getElementById('productDetails').textContent = 'Error fetching product information.';
+            }
+        });
+
         function continueShopping() {
             // Redirect to the index.html page
             window.location.href = 'index.html';
